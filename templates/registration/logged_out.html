@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block conteudo %}
+<div class="container mt-5 text-center">
+    <div class="alert alert-info">
+        <h4>Terminou a sessão!</h4>
+        <a href="{% url 'login' %}" class="btn btn-primary mt-3">Iniciar sessão novamente</a>
+    </div>
+</div>
+{% endblock %}

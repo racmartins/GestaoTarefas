@@ -1,0 +1,12 @@
+/* Personalização do admin */
+body.login {
+  background: #f2f6fc;
+}
+#header {
+  background: #0d6efd !important;
+  color: #fff !important;
+}
+#branding h1 {
+  color: #ffc107 !important;
+  font-weight: bold;
+}

@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/custom.css' %}">
+{% endblock %}
+{% block title %}Gestão de Tarefas - Administração{% endblock %}
+{% block branding %}
+    <a href="{% url 'admin:index' %}">
+        <img src="{% static 'admin/logo.png' %}" height="48" alt="Logo" style="vertical-align:middle;">
+    </a>
+    <h1 id="site-name"><a href="{% url 'admin:index' %}">Gestão de Tarefas</a></h1>
+{% endblock %}

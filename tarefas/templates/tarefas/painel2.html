@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block conteudo %}
+<!-- Styling extra para a dashboard -->
+<style>
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+.dashboard-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+.dashboard-action-btn {
+    min-width: 180px;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+.filter-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.task-list {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(80,120,200,0.05);
+    padding: 0.5rem 0.5rem 0.5rem 0;
+}
+.task-row {
+    display: flex;
+    align-items: center;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid #f1f3f5;
+}
+.task-row:last-child {
+    border-bottom: none;
+}
+.task-title {
+    flex: 1 1 0%;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+.task-date,
+.task-status {
+    margin-right: 1.2rem;
+}
+.status-badge {
+    font-size: .95rem;
+    padding: 0.3em 0.8em;
+    border-radius: 8px;
+    font-weight: 500;
+}
+.status-badge.pendente { background: #ffe69c; color: #735f00; }
+.status-badge.concluida { background: #b6fcb6; color: #166534; }
+.status-badge.atrasada { background: #f8d7da; color: #842029; }
+.action-btns .btn {
+    margin-left: 0.2rem;
+}
+@media (max-width: 900px) {
+    .dashboard-title { font-size: 1.5rem;}
+    .task-row { flex-direction: column; align-items: flex-start; gap: .5rem;}
+    .action-btns { margin-top: .5rem; }
+}
+</style>
+
+<div class="container py-4">
+    <div class="dashboard-header">
+        <div class="dashboard-title">As Minhas Tarefas</div>
+        <a href="{% url 'adicionar_tarefa' %}" class="btn btn-success dashboard-action-btn">
+            <i class="bi bi-plus-circle me-1"></i> Adicionar Nova Tarefa
+        </a>
+    </div>
+    <form method="get" class="filter-bar">
+        <input type="text" name="pesquisa" class="form-control" placeholder="Pesquisar..." value="{{ request.GET.pesquisa }}" style="max-width: 300px;">
+        <select name="estado" class="form-select" style="max-width: 180px;">
+            <option value="">Todos</option>
+            <option value="pendente" {% if request.GET.estado == 'pendente' %}selected{% endif %}>Pendentes</option>
+            <option value="concluida" {% if request.GET.estado == 'concluida' %}selected{% endif %}>Concluídas</option>
+        </select>
+        <button type="submit" class="btn btn-primary" style="min-width:120px;">Filtrar</button>
+    </form>
+    <div class="task-list mt-2">
+        {% for tarefa in tarefas %}
+        <div class="task-row {% if tarefa.estado == 'concluida' %}opacity-75 text-decoration-line-through{% endif %}">
+            <div class="task-title">{{ tarefa.titulo }}</div>
+            <div class="task-date">
+                <span class="badge bg-info text-dark">{{ tarefa.data_vencimento|date:"j \d\e F \d\e Y" }}</span>
+            </div>
+            <div class="task-status">
+                <span class="status-badge {% if tarefa.estado == 'concluida' %}concluida{% elif tarefa.estado == 'pendente' %}pendente{% else %}atrasada{% endif %}">
+                    {{ tarefa.get_estado_display }}
+                </span>
+            </div>
+            <div class="action-btns ms-auto">
+                <a href="{% url 'editar_tarefa' tarefa.id %}" class="btn btn-outline-primary btn-sm">
+                    <i class="bi bi-pencil"></i> Editar
+                </a>
+                <a href="{% url 'eliminar_tarefa' tarefa.id %}" class="btn btn-outline-danger btn-sm">
+                    <i class="bi bi-trash"></i> Eliminar
+                </a>
+                {% if tarefa.estado == 'pendente' %}
+                <a href="{% url 'concluir_tarefa' tarefa.id %}" class="btn btn-outline-success btn-sm">
+                    <i class="bi bi-check2-circle"></i> Concluir
+                </a>
+                {% endif %}
+            </div>
+        </div>
+        {% empty %}
+        <div class="p-4 text-center text-muted">Nenhuma tarefa encontrada.</div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Bootstrap Icons CDN -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+{% endblock %}
